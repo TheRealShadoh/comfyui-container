@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  comfyui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: comfyui
+    runtime: nvidia
+    restart: unless-stopped
+
+    # GPU configuration
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - CUDA_VISIBLE_DEVICES=0
+      # Set to 'false' to disable auto-update on container start
+      - UPDATE_ON_START=true
+      # Additional environment variables
+      - PYTHONUNBUFFERED=1
+
+    # Port mapping
+    ports:
+      - "8188:8188"  # ComfyUI Web UI
+
+    # Volume mounts
+    volumes:
+      # Models directory - shared between runs
+      - ./models:/app/models
+      # Output directory - where generated images are saved
+      - ./output:/app/output
+      # Custom nodes - for community extensions
+      - ./custom_nodes:/app/custom_nodes
+      # ComfyUI installation (optional - for persistence)
+      # Uncomment to keep ComfyUI installation between container restarts
+      # - comfyui-install:/app/comfyui
+
+    # Resource limits (adjust based on your hardware)
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1  # Number of GPUs to use (set to 'all' for all GPUs)
+              capabilities: [gpu]
+        limits:
+          memory: 16G  # Adjust based on your system RAM
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8188"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    # Security options
+    cap_add:
+      - SYS_PTRACE  # For debugging if needed
+
+    # Keep container running
+    stdin_open: true
+    tty: true
+
+# Volumes (only if using named volumes)
+# Uncomment the volume persistence section in the comfyui service to use these
+# volumes:
+#   comfyui-install:
+#     driver: local

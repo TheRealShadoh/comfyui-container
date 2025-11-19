@@ -1,0 +1,65 @@
+# Models and data
+models/
+output/
+custom_nodes/
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+
+# ComfyUI installation
+comfyui/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Docker
+.docker/
+
+# Temporary files
+*.tmp
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db

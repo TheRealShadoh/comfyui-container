@@ -1,0 +1,15 @@
+models/
+output/
+custom_nodes/
+.git
+.gitignore
+.dockerignore
+.vscode
+.idea
+*.md
+*.log
+.env*
+__pycache__
+*.pyc
+.DS_Store
+node_modules/
