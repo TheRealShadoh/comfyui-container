@@ -26,6 +26,14 @@ services:
     # Volume mounts
     volumes:
       # Models directory - shared between runs
+      # Directory structure is auto-created with these subdirectories:
+      # ./models/checkpoints/    - Main model checkpoints (.safetensors, .ckpt, .pth)
+      # ./models/loras/          - LoRA models
+      # ./models/vae/            - VAE models
+      # ./models/controlnet/     - ControlNet models
+      # ./models/clip/           - CLIP models
+      # ./models/embeddings/     - Textual inversion embeddings
+      # ./models/upscale_models/ - Upscaling models
       - ./models:/app/models
       # Output directory - where generated images are saved
       - ./output:/app/output

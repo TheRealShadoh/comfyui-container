@@ -44,7 +44,13 @@ WORKDIR /app
 
 # Create necessary directories
 RUN mkdir -p /app/comfyui \
-    && mkdir -p /app/models \
+    && mkdir -p /app/models/checkpoints \
+    && mkdir -p /app/models/loras \
+    && mkdir -p /app/models/vae \
+    && mkdir -p /app/models/controlnet \
+    && mkdir -p /app/models/clip \
+    && mkdir -p /app/models/embeddings \
+    && mkdir -p /app/models/upscale_models \
     && mkdir -p /app/output \
     && mkdir -p /app/custom_nodes
 

@@ -26,6 +26,16 @@ if [ -f "/app/custom_nodes/requirements.txt" ]; then
     python -m pip install --upgrade -r /app/custom_nodes/requirements.txt || true
 fi
 
+# Ensure model subdirectories exist
+echo -e "${YELLOW}[ComfyUI Container]${NC} Ensuring model directories exist..."
+mkdir -p /app/models/checkpoints
+mkdir -p /app/models/loras
+mkdir -p /app/models/vae
+mkdir -p /app/models/controlnet
+mkdir -p /app/models/clip
+mkdir -p /app/models/embeddings
+mkdir -p /app/models/upscale_models
+
 # Create necessary symlinks for models and outputs if they don't exist
 cd /app/comfyui
 
