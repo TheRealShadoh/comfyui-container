@@ -1,20 +1,24 @@
 # Build stage
-FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04 AS base
+FROM nvidia/cuda:12.6.3-cudnn-devel-ubuntu22.04 AS base
 
-# Set environment variables
+# Set environment variables for performance
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     CUDA_HOME=/usr/local/cuda \
     PATH=/usr/local/cuda/bin:${PATH} \
-    LD_LIBRARY_PATH=/usr/local/cuda/lib64:${LD_LIBRARY_PATH}
+    LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/lib/python3.12/dist-packages/torch/lib:/usr/local/lib/python3.12/dist-packages/nvidia/nvjitlink/lib:${LD_LIBRARY_PATH}
 
-# Install system dependencies
+# Install system dependencies with Python 3.12
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3.10 \
+    software-properties-common \
+    && add-apt-repository ppa:deadsnakes/ppa \
+    && apt-get update && apt-get install -y --no-install-recommends \
+    python3.12 \
+    python3.12-dev \
+    python3.12-venv \
     python3-pip \
-    python3-dev \
     git \
     wget \
     curl \
@@ -27,11 +31,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfreetype6-dev \
     libharfbuzz0b \
     libwebp7 \
+    ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-# Create symlink for python3
-RUN ln -sf /usr/bin/python3.10 /usr/bin/python && \
-    ln -sf /usr/bin/python3.10 /usr/bin/python3
+# Create symlink for python3.12
+RUN ln -sf /usr/bin/python3.12 /usr/bin/python && \
+    ln -sf /usr/bin/python3.12 /usr/bin/python3
 
 # Upgrade pip
 RUN python -m pip install --upgrade pip setuptools wheel
@@ -61,12 +66,8 @@ RUN git clone --depth=1 https://github.com/comfyanonymous/ComfyUI.git /app/comfy
 RUN cd /app/comfyui && \
     python -m pip install --upgrade -r requirements.txt || echo "Warning: Some requirements may have failed to install"
 
-# Install additional useful packages
-RUN python -m pip install --upgrade \
-    torch \
-    torchvision \
-    torchaudio \
-    --index-url https://download.pytorch.org/whl/cu124
+# Install PyTorch with CUDA 12.6 support (latest stable)
+RUN python -m pip install --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
 
 # Create entrypoint script
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh

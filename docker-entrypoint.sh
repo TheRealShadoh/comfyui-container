@@ -36,21 +36,33 @@ mkdir -p /app/models/clip
 mkdir -p /app/models/embeddings
 mkdir -p /app/models/upscale_models
 
-# Create necessary symlinks for models and outputs if they don't exist
+# Create necessary symlinks for models and outputs
 cd /app/comfyui
 
-if [ ! -L "models" ] && [ ! -d "models" ]; then
-    echo -e "${YELLOW}[ComfyUI Container]${NC} Linking models directory..."
+# Handle models directory - remove existing and create symlink
+if [ -d "models" ] && [ ! -L "models" ]; then
+    echo -e "${YELLOW}[ComfyUI Container]${NC} Replacing models directory with symlink..."
+    rm -rf models
+fi
+if [ ! -L "models" ]; then
     ln -s /app/models models
 fi
 
-if [ ! -L "output" ] && [ ! -d "output" ]; then
-    echo -e "${YELLOW}[ComfyUI Container]${NC} Linking output directory..."
+# Handle output directory
+if [ -d "output" ] && [ ! -L "output" ]; then
+    echo -e "${YELLOW}[ComfyUI Container]${NC} Replacing output directory with symlink..."
+    rm -rf output
+fi
+if [ ! -L "output" ]; then
     ln -s /app/output output
 fi
 
-if [ ! -L "custom_nodes" ] && [ ! -d "custom_nodes" ]; then
-    echo -e "${YELLOW}[ComfyUI Container]${NC} Linking custom_nodes directory..."
+# Handle custom_nodes directory
+if [ -d "custom_nodes" ] && [ ! -L "custom_nodes" ]; then
+    echo -e "${YELLOW}[ComfyUI Container]${NC} Replacing custom_nodes directory with symlink..."
+    rm -rf custom_nodes
+fi
+if [ ! -L "custom_nodes" ]; then
     ln -s /app/custom_nodes custom_nodes
 fi
 
