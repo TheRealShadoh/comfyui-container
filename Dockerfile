@@ -34,12 +34,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-# Create symlink for python3.12
+# Create symlink for python3.12 and install pip properly
 RUN ln -sf /usr/bin/python3.12 /usr/bin/python && \
-    ln -sf /usr/bin/python3.12 /usr/bin/python3
-
-# Upgrade pip
-RUN python -m pip install --upgrade pip setuptools wheel
+    ln -sf /usr/bin/python3.12 /usr/bin/python3 && \
+    python -m ensurepip --upgrade && \
+    python -m pip install --upgrade pip setuptools wheel
 
 # Final stage
 FROM base
